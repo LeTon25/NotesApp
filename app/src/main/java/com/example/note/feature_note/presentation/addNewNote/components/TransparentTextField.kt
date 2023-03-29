@@ -1,5 +1,6 @@
 package com.example.note.feature_note.presentation.addNewNote.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -9,6 +10,7 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun TransparentTextField(
     text : String,
@@ -20,7 +22,7 @@ fun TransparentTextField(
     onFocusChange : (FocusState) ->Unit,
     singleLine :Boolean = false,
 ) {
-    BasicTextField(value = text,
+    BasicTextField(value =if(isHintVisible) hint else text  ,
                    onValueChange =onValueChange,
                    textStyle= textStyle,
                     singleLine = singleLine,
@@ -28,8 +30,7 @@ fun TransparentTextField(
                         .fillMaxWidth()
                         .onFocusChanged {
                             onFocusChange(it)
-                        })
-    if (isHintVisible){
-        Text(text = text, style = textStyle, color = Color.DarkGray)
-    }
+                        }
+    )
+
 }

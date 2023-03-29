@@ -1,5 +1,6 @@
 package com.example.note.feature_note.presentation.notes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.note.feature_note.domain.model.Note
 import com.example.note.feature_note.domain.use_case.NoteUseCases
 import com.example.note.feature_note.domain.util.NoteOrder
+import com.example.note.feature_note.domain.util.OrderType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -20,6 +22,10 @@ class NotesViewModel @Inject constructor(private val noteUseCases: NoteUseCases)
     val notesState :State<NotesState> get() = _notesState
     private  var recentlyDeletedNote : Note? = null
     private var getNotesJob : Job? = null
+
+    init {
+        getNotes(NoteOrder.Date(OrderType.Descending))
+    }
     fun onEvent(notesEvent: NotesEvent){
        when(notesEvent){
            is NotesEvent.Order ->{

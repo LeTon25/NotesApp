@@ -73,7 +73,7 @@ fun NoteItem(note: Note,
                      maxLines = 1
                     )
                 Spacer(modifier= modifier.height(8.dp))
-                Text(text = note.title,
+                Text(text = note.content,
                     style = MaterialTheme.typography.bodyMedium,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 10,
@@ -83,7 +83,7 @@ fun NoteItem(note: Note,
         }
         Spacer(modifier = modifier.height(8.dp))
         IconButton(onClick = onDeleteClick,
-            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+            modifier = Modifier.align(alignment = Alignment.BottomEnd)
         ) {
             Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
         }

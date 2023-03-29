@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.note.feature_note.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
@@ -22,4 +23,6 @@ interface NoteDao {
 
     @Delete
     suspend fun deleteNode(note: Note)
+
+
 }

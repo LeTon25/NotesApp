@@ -10,11 +10,12 @@ import com.example.note.ui.theme.PurpleGrey80
 
 @Entity
 data  class Note (
-      val title :String,
-      val content : String,
-      val timestamp : Long,
-      val color :Int,
-      @PrimaryKey(autoGenerate = true) val id : Int? = null,
+    val title :String,
+    val content : String,
+    val timestamp : Long,
+    val color :Int,
+    val images : List<String>,
+    @PrimaryKey(autoGenerate = true) val id : Int? = null,
         ){
 
     companion object{

@@ -56,11 +56,8 @@ fun NotesScreen(
        Scaffold(
            snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
            floatingActionButton = {
-               FloatingActionButton(onClick = {
-                                     navController.navigate(Screen.AddEditNoteScreen.route)
-               } ,
+               FloatingActionButton(onClick = {navController.navigate(Screen.AddEditNoteScreen.route) },
                                   containerColor = MaterialTheme.colorScheme.primary
-
                    ) {
                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
                }
@@ -84,20 +81,17 @@ fun NotesScreen(
                    }
                     AnimatedVisibility(visible = state.isOrderSectionVisible,
                         enter = fadeIn() + slideInVertically(),
-                        exit = fadeOut() + slideOutVertically()
+                        exit = fadeOut() + slideOutVertically(),
                     ) {
-                        OrderSection(onChangeOrder = {
-                            notesViewModel.onEvent(NotesEvent.Order(it))
-                        },
-                            noteOrder = state.noteOrder,
+                        OrderSection(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp)
+                                .fillMaxWidth(),
+                            onChangeOrder = { notesViewModel.onEvent(NotesEvent.Order(it)) },
+                            noteOrder = state.noteOrder,
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    LazyColumn(modifier =  Modifier.fillMaxSize()
-                    ){
+                    LazyColumn(modifier =  Modifier.fillMaxSize()){
                        items(state.notes){
                            note ->
                             NoteItem(note = note,
@@ -118,6 +112,7 @@ fun NotesScreen(
                                     .clickable {
                                         navController.navigate(Screen.AddEditNoteScreen.route + "?noteId=${note.id}&noteColor=${note.color}")
                                     }
+                                    .padding(top = 4.dp)
                             )
                        }
                     }
