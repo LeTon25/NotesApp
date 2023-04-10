@@ -13,6 +13,7 @@ data  class Note (
     val title :String,
     val content : String,
     val timestamp : Long,
+    val timeToNofi:String = "",
     val color :Int,
     val images : List<String>,
     @PrimaryKey(autoGenerate = true) val id : Int? = null,

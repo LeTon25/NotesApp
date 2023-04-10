@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.note.feature_note.domain.model.AlarmItem
 import com.example.note.feature_note.domain.model.InvalidNoteException
 import com.example.note.feature_note.domain.model.Note
 import com.example.note.feature_note.domain.use_case.NoteUseCases
@@ -15,6 +16,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +44,9 @@ class AddEditNoteViewModel @Inject constructor(
     private  var _noteColor = mutableStateOf<Int>(Note.noteColors.random().toArgb())
     val noteColor:State<Int> get() = _noteColor
 
+    private var _noteTimeNoti = mutableStateOf(NoteTimeNoficationState())
+    val noteTimeNoti:State<NoteTimeNoficationState>  get() = _noteTimeNoti
+
     private  var _eventFlow = MutableSharedFlow<UiEvent>()
         val eventFlow get() = _eventFlow.asSharedFlow()
 
@@ -61,7 +68,16 @@ class AddEditNoteViewModel @Inject constructor(
                                 _noteImage.value = _noteImage.value.copy(
                                     listImageUri = note.images
                                 )
+
                                 _noteColor.value = note.color
+
+                                if (note.timeToNofi.trim().length != 0 ){
+                                    _noteTimeNoti.value = _noteTimeNoti.value.copy(
+                                        isSetted = true,
+                                        isSentToAlarm = true,
+                                        timeString = note.timeToNofi
+                                    )
+                                }
                             }
                     }
                 }
@@ -104,6 +120,7 @@ class AddEditNoteViewModel @Inject constructor(
                                     timestamp = System.currentTimeMillis() ,
                                     color = _noteColor.value,
                                     id = currentNoteId,
+                                    timeToNofi = _noteTimeNoti.value.timeString ?: "",
                                     images =  _noteImage.value.listImageUri
                                 )
                             )
@@ -114,6 +131,7 @@ class AddEditNoteViewModel @Inject constructor(
                                     content = _noteContent.value.text,
                                     timestamp = System.currentTimeMillis() ,
                                     color = _noteColor.value,
+                                    timeToNofi = _noteTimeNoti.value.timeString ?: "",
                                     images =  _noteImage.value.listImageUri
                                 )
                             )
@@ -129,8 +147,35 @@ class AddEditNoteViewModel @Inject constructor(
             is AddEditNoteEvent.AddImage ->{
                 _noteImage.value = _noteImage.value.copy(listImageUri = event.listUri + _noteImage.value.listImageUri)
             }
-            is AddEditNoteEvent.AddTimeToNoti -> {}
+            is AddEditNoteEvent.SetTimeForNoti -> {
+                Log.d("theodoi",event.timeString)
+
+                _noteTimeNoti.value = _noteTimeNoti.value.copy(isSetted = true,
+                                        timeString = event.timeString
+                    )
+            }
+            is AddEditNoteEvent.RemoveTimeForNoti->{
+                _noteTimeNoti.value = _noteTimeNoti.value.copy( isSetted = false,
+                                    timeString = null
+                    )
+
+                _eventFlow.tryEmit(UiEvent.showSnackBar("Đã hủy thông báo"))
+            }
+            is AddEditNoteEvent.SendToAlarmManager ->{
+                if (_noteTimeNoti.value.isSetted && _noteTimeNoti.value.isSentToAlarm ==false){
+                    event.alarmSheduler.schedule(createAlarmItem())
+                }
+            }
         }
+    }
+
+    private fun createAlarmItem(): AlarmItem {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        return AlarmItem(
+                time = LocalDateTime.parse(_noteTimeNoti.value.timeString,formatter),
+                title = _noteTitle.value.text,
+                message= _noteContent.value.text
+            )
     }
 }
 

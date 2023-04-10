@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.note.feature_note.alarm.AlarmSchedulerImpl
+import com.example.note.feature_note.alarm.AlarmSheduler
 import com.example.note.feature_note.presentation.addNewNote.components.AddEditNoteScreen
 import com.example.note.feature_note.presentation.notes.components.NotesScreen
 import com.example.note.feature_note.presentation.util.Screen
@@ -51,8 +53,9 @@ class MainActivity : ComponentActivity() {
                             ),
 
                         ){
+                                    val alarmScheduler =  AlarmSchedulerImpl(this@MainActivity)
                                     val color = it.arguments?.getInt("noteColor") ?: 1
-                                    AddEditNoteScreen(navController = navController, noteColor = color)
+                                    AddEditNoteScreen(navController = navController, noteColor = color, alarmScheduler= alarmScheduler)
                         }
                     }
                 }
